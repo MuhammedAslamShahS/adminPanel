@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import {
   getAdminOrders,
@@ -21,6 +21,9 @@ const OrdersPage = ({ adminSession }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [savingOrderId, setSavingOrderId] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [paymentFilter, setPaymentFilter] = useState("ALL");
 
   const loadOrders = async () => {
     try {
@@ -48,6 +51,27 @@ const OrdersPage = ({ adminSession }) => {
   useEffect(() => {
     loadOrders();
   }, [adminSession?.token]);
+
+  const filteredOrders = useMemo(() => {
+    const normalizedSearch = searchText.trim().toLowerCase();
+
+    return orders.filter((order) => {
+      const matchesSearch =
+        !normalizedSearch ||
+        order.id?.toLowerCase().includes(normalizedSearch) ||
+        order.user?.name?.toLowerCase().includes(normalizedSearch) ||
+        order.user?.email?.toLowerCase().includes(normalizedSearch) ||
+        order.items.some((item) => item.title?.toLowerCase().includes(normalizedSearch));
+
+      const matchesStatus =
+        statusFilter === "ALL" || order.status === statusFilter;
+
+      const matchesPayment =
+        paymentFilter === "ALL" || order.paymentMethod === paymentFilter;
+
+      return matchesSearch && matchesStatus && matchesPayment;
+    });
+  }, [orders, paymentFilter, searchText, statusFilter]);
 
   const handleStatusChange = (orderId, nextStatus) => {
     setStatusDrafts((currentDrafts) => ({
@@ -90,10 +114,50 @@ const OrdersPage = ({ adminSession }) => {
         </div>
 
         <div className="orders-summary-card">
-          <span className="orders-summary-label">Total Orders</span>
-          <strong className="orders-summary-value">{orders.length}</strong>
+          <span className="orders-summary-label">Visible Orders</span>
+          <strong className="orders-summary-value">{filteredOrders.length}</strong>
         </div>
       </div>
+
+      <section className="orders-filter-panel">
+        <label className="orders-filter-field">
+          <span>Search</span>
+          <input
+            type="text"
+            value={searchText}
+            onChange={(event) => setSearchText(event.target.value)}
+            placeholder="Search order, customer, or product"
+          />
+        </label>
+
+        <label className="orders-filter-field">
+          <span>Status</span>
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+          >
+            <option value="ALL">All statuses</option>
+            {orderStatuses.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="orders-filter-field">
+          <span>Payment</span>
+          <select
+            value={paymentFilter}
+            onChange={(event) => setPaymentFilter(event.target.value)}
+          >
+            <option value="ALL">All payments</option>
+            <option value="cod">COD</option>
+            <option value="upi">UPI</option>
+            <option value="card">Card</option>
+          </select>
+        </label>
+      </section>
 
       {isLoading ? (
         <div className="orders-empty-state">Loading orders...</div>
@@ -105,15 +169,15 @@ const OrdersPage = ({ adminSession }) => {
         </div>
       ) : null}
 
-      {!isLoading && !hasError && orders.length === 0 ? (
+      {!isLoading && !hasError && filteredOrders.length === 0 ? (
         <div className="orders-empty-state">
-          No orders have been placed yet.
+          No orders match the current search or filters.
         </div>
       ) : null}
 
-      {!isLoading && !hasError && orders.length > 0 ? (
+      {!isLoading && !hasError && filteredOrders.length > 0 ? (
         <div className="orders-list">
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <article className="admin-order-card" key={order.id}>
               <div className="admin-order-top">
                 <div>

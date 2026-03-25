@@ -54,6 +54,38 @@
   color: #5c6c70;
 }
 
+.products-filter-panel {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 0.8fr;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(32, 48, 54, 0.08);
+  box-shadow: 0 18px 34px rgba(38, 27, 12, 0.08);
+}
+
+.products-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.products-filter-field span {
+  color: #314247;
+  font-weight: 600;
+}
+
+.products-filter-field input,
+.products-filter-field select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #d8d0c4;
+  border-radius: 16px;
+  padding: 0 16px;
+  background-color: #fffdf9;
+}
+
 .product-form-panel {
   padding: 24px;
   border-radius: 24px;
@@ -296,6 +328,10 @@
   }
 
   .product-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .products-filter-panel {
     grid-template-columns: 1fr;
   }
 

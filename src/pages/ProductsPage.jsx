@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import {
   createAdminProduct,
@@ -26,6 +26,9 @@ const ProductsPage = ({ adminSession }) => {
   const [hasError, setHasError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [formValues, setFormValues] = useState(emptyFormValues);
 
   const loadProducts = async () => {
@@ -48,6 +51,32 @@ const ProductsPage = ({ adminSession }) => {
   useEffect(() => {
     loadProducts();
   }, [adminSession?.token]);
+
+  const availableCategories = useMemo(() => {
+    return [...new Set(products.map((product) => product.category).filter(Boolean))];
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    const normalizedSearch = searchText.trim().toLowerCase();
+
+    return products.filter((product) => {
+      const matchesSearch =
+        !normalizedSearch ||
+        product.title?.toLowerCase().includes(normalizedSearch) ||
+        product.brand?.toLowerCase().includes(normalizedSearch) ||
+        product.category?.toLowerCase().includes(normalizedSearch);
+
+      const matchesStatus =
+        statusFilter === "ALL" ||
+        (statusFilter === "ACTIVE" && product.isActive) ||
+        (statusFilter === "INACTIVE" && !product.isActive);
+
+      const matchesCategory =
+        categoryFilter === "ALL" || product.category === categoryFilter;
+
+      return matchesSearch && matchesStatus && matchesCategory;
+    });
+  }, [categoryFilter, products, searchText, statusFilter]);
 
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -160,10 +189,49 @@ const ProductsPage = ({ adminSession }) => {
         </div>
 
         <div className="products-summary-card">
-          <span className="products-summary-label">Available Products</span>
-          <strong className="products-summary-value">{products.length}</strong>
+          <span className="products-summary-label">Visible Products</span>
+          <strong className="products-summary-value">{filteredProducts.length}</strong>
         </div>
       </div>
+
+      <section className="products-filter-panel">
+        <label className="products-filter-field">
+          <span>Search</span>
+          <input
+            type="text"
+            value={searchText}
+            onChange={(event) => setSearchText(event.target.value)}
+            placeholder="Search title, brand, or category"
+          />
+        </label>
+
+        <label className="products-filter-field">
+          <span>Status</span>
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+          >
+            <option value="ALL">All products</option>
+            <option value="ACTIVE">Active only</option>
+            <option value="INACTIVE">Inactive only</option>
+          </select>
+        </label>
+
+        <label className="products-filter-field">
+          <span>Category</span>
+          <select
+            value={categoryFilter}
+            onChange={(event) => setCategoryFilter(event.target.value)}
+          >
+            <option value="ALL">All categories</option>
+            {availableCategories.map((categoryName) => (
+              <option key={categoryName} value={categoryName}>
+                {categoryName}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
 
       <section className="product-form-panel">
         <div className="product-form-header">
@@ -305,15 +373,15 @@ const ProductsPage = ({ adminSession }) => {
         </div>
       ) : null}
 
-      {!isLoading && !hasError && products.length === 0 ? (
+      {!isLoading && !hasError && filteredProducts.length === 0 ? (
         <div className="products-empty-state">
-          No products found in the admin catalog yet.
+          No products match the current search or filters.
         </div>
       ) : null}
 
-      {!isLoading && !hasError && products.length > 0 ? (
+      {!isLoading && !hasError && filteredProducts.length > 0 ? (
         <div className="products-grid">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <article className="product-card" key={product.id}>
               <div className="product-card-image-wrap">
                 <img
