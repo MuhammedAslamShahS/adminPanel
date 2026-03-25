@@ -1,0 +1,89 @@
+.admin-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+
+.admin-sidebar {
+  padding: 28px 22px;
+  background: linear-gradient(180deg, #1f2a2e 0%, #162024 100%);
+  color: #f5ede0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.admin-brand-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #f3b27e;
+  margin: 0 0 8px;
+}
+
+.admin-brand-title {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-nav-link {
+  padding: 14px 16px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: #f5ede0;
+  background-color: transparent;
+  transition: 0.2s ease;
+}
+
+.admin-nav-link:hover,
+.admin-nav-link.active {
+  background: linear-gradient(135deg, rgba(243, 178, 126, 0.18), rgba(255, 255, 255, 0.08));
+}
+
+.admin-sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-user-email {
+  margin: 0;
+  color: #d6cab9;
+  word-break: break-word;
+}
+
+.admin-logout-btn {
+  min-height: 46px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ef8f4b, #dc5a1a);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-main {
+  padding: 28px;
+}
+
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    gap: 18px;
+  }
+
+  .admin-main {
+    padding: 18px;
+  }
+}
