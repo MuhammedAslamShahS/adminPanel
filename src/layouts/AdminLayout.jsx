@@ -39,6 +39,14 @@ const AdminLayout = ({ adminSession, onLogout }) => {
           >
             Products
           </NavLink>
+          <NavLink
+            to="/orders"
+            className={({ isActive }) =>
+              `admin-nav-link ${isActive ? "active" : ""}`
+            }
+          >
+            Orders
+          </NavLink>
         </nav>
 
         <div className="admin-sidebar-footer">

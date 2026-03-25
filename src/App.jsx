@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { useMemo, useState } from "react";
 import AdminLayout from "./layouts/AdminLayout";
 import LoginPage from "./pages/LoginPage";
+import OrdersPage from "./pages/OrdersPage";
 import ProductsPage from "./pages/ProductsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import {
@@ -54,6 +55,10 @@ const App = () => {
           <Route
             path="/products"
             element={<ProductsPage adminSession={adminSession} />}
+          />
+          <Route
+            path="/orders"
+            element={<OrdersPage adminSession={adminSession} />}
           />
         </Route>
       </Route>
