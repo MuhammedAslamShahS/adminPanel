@@ -46,7 +46,7 @@ const LoginPage = ({ onLogin }) => {
       onLogin(session);
 
       toast.success("Admin login successful.");
-      navigate("/products", { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       const fallbackMessage =
         error?.message === "This account does not have admin access."

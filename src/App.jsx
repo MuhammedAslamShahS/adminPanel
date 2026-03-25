@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useMemo, useState } from "react";
 import AdminLayout from "./layouts/AdminLayout";
+import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import OrdersPage from "./pages/OrdersPage";
 import ProductsPage from "./pages/ProductsPage";
@@ -32,14 +33,14 @@ const App = () => {
     <Routes>
       <Route
         path="/"
-        element={<Navigate to={isLoggedIn ? "/products" : "/login"} replace />}
+        element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />}
       />
 
       <Route
         path="/login"
         element={
           isLoggedIn ? (
-            <Navigate to="/products" replace />
+            <Navigate to="/dashboard" replace />
           ) : (
             <LoginPage onLogin={handleLogin} />
           )
@@ -52,6 +53,10 @@ const App = () => {
             <AdminLayout adminSession={adminSession} onLogout={handleLogout} />
           }
         >
+          <Route
+            path="/dashboard"
+            element={<DashboardPage adminSession={adminSession} />}
+          />
           <Route
             path="/products"
             element={<ProductsPage adminSession={adminSession} />}

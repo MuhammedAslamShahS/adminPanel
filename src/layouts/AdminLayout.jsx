@@ -32,6 +32,14 @@ const AdminLayout = ({ adminSession, onLogout }) => {
 
         <nav className="admin-nav">
           <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              `admin-nav-link ${isActive ? "active" : ""}`
+            }
+          >
+            Dashboard
+          </NavLink>
+          <NavLink
             to="/products"
             className={({ isActive }) =>
               `admin-nav-link ${isActive ? "active" : ""}`
