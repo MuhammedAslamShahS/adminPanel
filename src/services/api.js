@@ -25,6 +25,7 @@ const normalizeProduct = (product) => {
   return {
     ...product,
     image: product.imageUrl || "",
+    section: product.section || "",
     price: Number(product.price || 0),
     stock: Number(product.stock || 0),
   };

@@ -145,6 +145,7 @@
 }
 
 .product-form-field input,
+.product-form-field select,
 .product-form-field textarea {
   width: 100%;
   border: 1px solid #d8d0c4;
@@ -229,12 +230,22 @@
   align-items: center;
 }
 
+.product-card-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .product-card-category {
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #cc6a32;
+}
+
+.product-card-section {
+  color: #55656a;
 }
 
 .product-status-badge {

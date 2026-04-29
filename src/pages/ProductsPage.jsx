@@ -14,11 +14,21 @@ const emptyFormValues = {
   description: "",
   brand: "",
   category: "",
+  section: "",
   price: "",
   stock: "",
   imageUrl: "",
   isActive: true,
 };
+
+const storefrontSectionOptions = [
+  { value: "", label: "No storefront section" },
+  { value: "NEW IN", label: "NEW IN" },
+  { value: "SALES", label: "SALES" },
+  { value: "COLLECTIONS", label: "COLLECTIONS" },
+  { value: "WEDDING", label: "WEDDING" },
+  { value: "DEALS", label: "DEALS" },
+];
 
 const ProductsPage = ({ adminSession }) => {
   const [products, setProducts] = useState([]);
@@ -99,6 +109,7 @@ const ProductsPage = ({ adminSession }) => {
       description: product.description || "",
       brand: product.brand || "",
       category: product.category || "",
+      section: product.section || "",
       price: String(product.price ?? ""),
       stock: String(product.stock ?? ""),
       imageUrl: product.imageUrl || "",
@@ -122,6 +133,7 @@ const ProductsPage = ({ adminSession }) => {
       description: formValues.description.trim(),
       brand: formValues.brand.trim(),
       category: formValues.category.trim(),
+      section: formValues.section,
       price: Number(formValues.price),
       stock: formValues.stock === "" ? 0 : Number(formValues.stock),
       imageUrl: formValues.imageUrl.trim(),
@@ -292,6 +304,21 @@ const ProductsPage = ({ adminSession }) => {
           </label>
 
           <label className="product-form-field">
+            <span>Storefront Section</span>
+            <select
+              name="section"
+              value={formValues.section}
+              onChange={handleInputChange}
+            >
+              {storefrontSectionOptions.map((sectionOption) => (
+                <option key={sectionOption.value || "none"} value={sectionOption.value}>
+                  {sectionOption.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="product-form-field">
             <span>Price</span>
             <input
               type="number"
@@ -393,9 +420,16 @@ const ProductsPage = ({ adminSession }) => {
 
               <div className="product-card-content">
                 <div className="product-card-top">
-                  <span className="product-card-category">
-                    {product.category || "Uncategorized"}
-                  </span>
+                  <div className="product-card-labels">
+                    <span className="product-card-category">
+                      {product.category || "Uncategorized"}
+                    </span>
+                    {product.section ? (
+                      <span className="product-card-category product-card-section">
+                        {product.section}
+                      </span>
+                    ) : null}
+                  </div>
                   <span
                     className={`product-status-badge ${
                       product.isActive ? "active" : "inactive"
